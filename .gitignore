@@ -1,3 +1,5 @@
 *keys.pub
 __pycache__
 .vscode
+*.zip
+home/
