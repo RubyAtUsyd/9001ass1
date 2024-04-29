@@ -1,9 +1,9 @@
 from photon import Photon
 
 '''
-Name:   Xxx Yyy
-SID:    XXXXXXXXX
-Unikey: xxxxXXXX
+Name:   Ruby Liang
+SID:    540180464
+Unikey: blia0673
 
 Emitter - A laser that emits a photon with a frequency and direction.
 The frequency and direction of the photon it emits is determined by the
@@ -40,7 +40,13 @@ class Emitter:
         x      - the x position to set this emitter to
         y      - the y position to set this emitter to
         '''
-        pass
+        self.symbol = symbol
+        self.x = x
+        self.y = y
+        self.component_type = "emitter"
+        self.frequency = 0
+        self.direction = None
+        self.pulse_sequence_set = False
 
 
     def emit_photon(self) -> Photon:
@@ -53,7 +59,8 @@ class Emitter:
         A photon that inherits this emitter's position, frequency and 
         direction.
         '''
-        pass
+        new_photon = Photon(self.get_x(), self.get_y(), self.frequency, self.direction)
+        return new_photon
 
 
     def set_pulse_sequence(self, frequency: int, direction: str) -> None:
@@ -72,45 +79,54 @@ class Emitter:
         frequency - the new frequency to set for this emitter 
         direction - the new direction to set for this emitter      
         '''
-        pass
+        if frequency > 0 and (direction == 'N' or direction == 'E' or direction == 'S' or direction == 'W'):
+            self.direction = direction
+            self.frequency = frequency
+            # print(f"set {self.direction}")
+            # print(f"set {self.frequency}")
+        return None
 
 
     def is_pulse_sequence_set(self) -> bool:
         # only requires implementation once you reach RUN-MY-CIRCUIT
         '''Returns whether or not the pulse sequence for this emitter has been set.'''
-        pass
+        if self.direction == None and self.frequency == 0:
+            return False
+        else:
+            return True
+            
 
 
     def get_frequency(self) -> int:
         # only requires implementation once you reach RUN-MY-CIRCUIT
         '''Returns frequency.'''
-        pass
+        return self.frequency
 
 
     def get_direction(self) -> str:
         # only requires implementation once you reach RUN-MY-CIRCUIT
         '''Returns direction.'''
-        pass
+        return self.direction
 
 
     def get_component_type(self) -> str:
         '''Returns component type.'''
-        pass
+        return self.component_type
 
 
     def get_symbol(self) -> str:
         '''Returns symbol.'''
-        pass
+        return self.symbol
 
     
     def get_x(self) -> int:
         '''Returns x.'''
-        pass
+        return self.x
 
 
     def get_y(self) -> int:
         '''Returns y.'''
-        pass
+        return self.y
 
 
     def __str__(self) -> str:
@@ -136,4 +152,5 @@ class Emitter:
         >>> print(self)
         C: 256THz, South
         '''
-        pass
+        format_str = f"{self.get_symbol()}: {self.get_frequency()}THz, {self.get_direction()}"
+        return format_str

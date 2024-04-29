@@ -1,9 +1,9 @@
 from photon import Photon
 
 '''
-Name:   Xxx Yyy
-SID:    XXXXXXXXX
-Unikey: xxxxXXXX
+Name:   Ruby Liang
+SID:    540180464
+Unikey: blia0673
 
 Mirror - A surface that reflect photons, changing the direction in which they 
 travel. A photon may also become lost depending on the type of mirror and the
@@ -34,7 +34,10 @@ class Mirror:
         x:      int - the x position to set this mirror to
         y:      int - the y position to set this mirror to
         '''
-        pass
+        self.component_type = "mirror"
+        self.symbol = symbol
+        self.x = x
+        self.y = y
 
 
     def reflect_photon(self, photon: Photon) -> None:
@@ -52,27 +55,88 @@ class Mirror:
         ---------
         photon - the photon to reflect off this mirror
         '''
-        pass
+        # ('/', '\', '>', '<', '^' or 'v')
+        if photon.is_absorbed():
+            return None
+        else:
+            if self.get_symbol() == '/':
+                if photon.get_direction() == "N":
+                    photon.set_direction("E")
+                elif photon.get_direction() == "E":
+                    photon.set_direction("N")
+                elif photon.get_direction() == "S":
+                    photon.set_direction("W")
+                elif photon.get_direction() == "W":
+                    photon.set_direction("S")
 
+            elif self.get_symbol() == '\\':
+                if photon.get_direction() == "N":
+                    photon.set_direction("S")
+                elif photon.get_direction() == "E":
+                    photon.set_direction("N")
+                elif photon.get_direction() == "S":
+                    photon.set_direction("W")
+                elif photon.get_direction() == "W":
+                    photon.set_direction("S")
+
+            elif self.get_symbol() == '>':
+                if photon.get_direction() == "N":
+                    photon.set_direction("E")
+                elif photon.get_direction() == "S":
+                    photon.set_direction("E")
+                elif photon.get_direction() == "E":
+                    photon.got_absorbed()
+                elif photon.get_direction() == "W":
+                    photon.got_absorbed()
+
+            elif self.get_symbol() == '<':
+                if photon.get_direction() == "N":
+                    photon.set_direction("W")
+                elif photon.get_direction() == "S":
+                    photon.set_direction("W")
+                elif photon.get_direction() == "E":
+                    photon.got_absorbed()
+                elif photon.get_direction() == "W":
+                    photon.got_absorbed()
+
+            elif self.get_symbol() == '^':
+                if photon.get_direction() == "N":
+                    photon.got_absorbed()
+                elif photon.get_direction() == "S":
+                    photon.got_absorbed()
+                elif photon.get_direction() == "E":
+                    photon.set_direction("N")
+                elif photon.get_direction() == "W":
+                    photon.set_direction("N")
+
+            elif self.get_symbol() == 'v':
+                if photon.get_direction() == "N":
+                    photon.got_absorbed()
+                elif photon.get_direction() == "S":
+                    photon.got_absorbed()
+                elif photon.get_direction() == "E":
+                    photon.set_direction("S")
+                elif photon.get_direction() == "W":
+                    photon.set_direction("S")
 
     def get_component_type(self) -> str:
         '''Returns component type.'''
-        pass
+        return self.component_type
 
 
     def get_symbol(self) -> str:
         # only requires implementation once you reach ADD-MY-MIRRORS
         '''Returns symbol.'''
-        pass
+        return self.symbol
 
     
     def get_x(self) -> int:
         # only requires implementation once you reach ADD-MY-MIRRORS
         '''Returns x.'''
-        pass
+        return self.x
 
 
     def get_y(self) -> int:
         # only requires implementation once you reach ADD-MY-MIRRORS
         '''Returns y.'''
-        pass   
+        return self.y   

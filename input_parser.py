@@ -3,9 +3,9 @@ from receiver import Receiver
 from mirror import Mirror
 
 '''
-Name:   Xxx Yyy
-SID:    XXXXXXXXX
-Unikey: xxxxXXXX
+Name:   Ruby Liang
+SID:    540180464
+Unikey: blia0673
 
 input_parser - A module that parses the inputs of the program. 
 We define parsing as checking the validity of what has been entered 
@@ -53,7 +53,39 @@ def parse_size(user_input: str) -> tuple[int, int] | None:
     >>> size
     (18, 6)
     '''
-    pass
+    format_in = user_input.split(' ')
+    if len(format_in) != 2:
+        raise TypeError(f"Error: <width> <height>")
+        return None
+    
+    width = format_in[0]
+    height = format_in[1]
+    try:
+        width = int(width)  
+    except ValueError:
+        raise TypeError("Error: width is not an integer")  # 如果失败，则抛出异常
+        return None
+
+    # if type(width) != int:
+    #     raise TypeError("Error: width is not an integer")
+    #     return None
+    if width <= 0:
+        raise ValueError("Error: width must be greater than zero")
+        return None
+    
+    try:
+        height = int(height)  
+    except ValueError:
+        raise TypeError("Error: height is not an integer")  # 如果失败，则抛出异常
+        return None
+    # if type(height) != int:
+    #     raise TypeError("Error: height is not an integer")
+    #     return None
+    if height <= 0:
+        raise ValueError("Error: height must be greater than zero")
+        return None
+    
+    return (width, height)
 
 
 def parse_emitter(user_input: str) -> Emitter | None:
@@ -81,7 +113,42 @@ def parse_emitter(user_input: str) -> Emitter | None:
     Else, if at any point a check fails, prints an error message stating the cause
     of the error and returns None, skipping any further checks.
     '''
-    pass
+    if len(user_input.split(' ')) != 3:
+        # raise TypeError(f"Error: {format_in[0]} {format_in[1]} {format_in[2]}")
+        raise TypeError("Error: <symbol> <x> <y>")
+        return None
+    symbol, x, y = user_input.split(' ')
+    
+
+    i = 0
+    alphabat =["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"]
+    while i < len(alphabat):
+        if symbol == alphabat[i]:
+            try:
+                x = int(x)  
+            except ValueError:
+                raise TypeError("Error: x is not an integer")  # 如果失败，则抛出异常
+                return None
+            
+            if x < 0:
+                raise ValueError("Error: x can not be negative.")
+                return None
+            
+            try:
+                y = int(y)  
+            except ValueError:
+                raise TypeError("Error: y is not an integer")  # 如果失败，则抛出异常
+                return None
+            
+            if y < 0:
+                raise ValueError("Error: y can not be negative.")
+                return None
+            
+            emitter_in =  Emitter(symbol, x, y)
+            return emitter_in
+        i += 1
+    raise ValueError("Error: symbol is not between 'A'-'J'.")
+    return None
 
 
 def parse_receiver(user_input: str) -> Receiver | None:
@@ -102,7 +169,43 @@ def parse_receiver(user_input: str) -> Receiver | None:
     Else, if at any point a check fails, prints an error message stating the cause
     of the error and returns None, skipping any further checks.    
     '''
-    pass
+    if len(user_input.split(' ')) != 3:
+        # raise TypeError(f"Error: {format_in[0]} {format_in[1]} {format_in[2]}")
+        raise TypeError("Error: <symbol> <x> <y>")
+        return None
+    symbol, x, y = user_input.split(' ')
+
+
+    i = 0
+    alphabat = ["R0", "R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8", "R9"]
+    while i < len(alphabat):
+        if symbol == alphabat[i]:
+
+            try:
+                x = int(x)  
+            except ValueError:
+                raise TypeError("Error: x is not an integer")  # 如果失败，则抛出异常
+                return None
+            
+            if x < 0:
+                raise ValueError("Error: x can not be negative.")
+                return None
+            
+            try:
+                y = int(y)  
+            except ValueError:
+                raise TypeError("Error: y is not an integer")  # 如果失败，则抛出异常
+                return None
+            
+            if y < 0:
+                raise ValueError("Error: y can not be negative.")
+                return None
+            
+            receiver_in =  Receiver(symbol, x, y)
+            return receiver_in
+        i += 1
+    raise ValueError("Error: symbol is not between 'R0'-'R9'.")
+    return None
 
 
 def parse_pulse_sequence(line: str) -> tuple[str, int, str] | None:
@@ -131,7 +234,37 @@ def parse_pulse_sequence(line: str) -> tuple[str, int, str] | None:
     Else, if at any point a check fails, prints an error message stating the cause
     of the error and returns None, skipping any further checks.    
     '''
-    pass
+    if len(line.split(' ')) != 3:
+        # 1)  line contains exactly 3 tokens.
+        raise TypeError("Error: <symbol> <frequency> <direction>")
+        return None
+    symbol, frequency, direction = line.split(' ')
+
+    i = 0
+    alphabat = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"]
+    while i < len(alphabat):
+        if symbol == alphabat[i]:
+            # 3)  frequency is an integer.
+            try:
+                frequency = int(frequency)  
+            except ValueError:
+                raise TypeError("Error: frequency is not an integer")  # 如果失败，则抛出异常
+                return None
+            # 4)  frequency is greater than zero.
+            if frequency <= 0:
+                raise ValueError("Error: frequency must be greater than zero.")
+                return None
+            
+            # 5)  direction is either 'N', 'E', 'S' or 'W'.
+            if not  (direction == 'N' or direction == 'E' or direction == 'S' or direction == 'W'):
+                raise ValueError("Error: direction must be 'N', 'E', 'S' or 'W'.")
+                return None
+            
+            return symbol, frequency, direction
+        i += 1
+    # 2)  symbol is a character between 'A' to 'J'.
+    raise ValueError("Error: symbol is not between 'A'-'J'.")
+    return None
 
 
 def parse_mirror(user_input: str) -> Mirror | None:
@@ -159,4 +292,40 @@ def parse_mirror(user_input: str) -> Mirror | None:
     Else, if at any point a check fails, prints an error message stating the cause
     of the error and returns None, skipping any further checks.    
     '''
-    pass
+    if len(user_input.split(' ')) != 3:
+        # raise TypeError(f"Error: {format_in[0]} {format_in[1]} {format_in[2]}")
+        raise TypeError(f"Error: <symbol> <x> <y>")
+        return None
+    symbol, x, y = user_input.split(' ')
+
+
+    i = 0
+    alphabat = ["\\", "/", ">", "<", "^", "v", ]
+    while i < len(alphabat):
+        if symbol == alphabat[i]:
+
+            try:
+                x = int(x)  
+            except ValueError:
+                raise TypeError("Error: x is not an integer")  # 如果失败，则抛出异常
+                return None
+            
+            if x < 0:
+                raise ValueError("Error: x can not be negative.")
+                return None
+            
+            try:
+                y = int(y)  
+            except ValueError:
+                raise TypeError("Error: y is not an integer")  # 如果失败，则抛出异常
+                return None
+            
+            if y < 0:
+                raise ValueError("Error: y can not be negative.")
+                return None
+            
+            mirror_in =  Mirror(symbol, x, y)
+            return mirror_in
+        i += 1
+    raise ValueError("Error: symbol must be '/', '\', '>', '<', '^' or 'v'")
+    return None

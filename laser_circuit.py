@@ -6,9 +6,9 @@ from mirror import Mirror
 from board_displayer import BoardDisplayer
 
 '''
-Name:   Xxx Yyy
-SID:    XXXXXXXXX
-Unikey: xxxxXXXX
+Name:   Ruby Liang
+SID:    540180464
+Unikey: blia0673
 
 LaserCircuit - Responsible for storing all the components of the circuit and
 handling the computation of running the circuit. It's responsible for delegating 
@@ -47,7 +47,14 @@ class LaserCircuit:
         width  - the width to set this circuit board to
         height - the width to set this circuit board to
         '''
-        pass
+        self.width = width
+        self.height = height
+        self.emitters: list[Emitter] = []
+        self.receivers: list[Receiver] = []
+        self.photons: list[Photon] = []
+        self.mirrors: list[Mirror] = []
+        self.board_displayer = BoardDisplayer(width, height)
+        self.clock = 0
 
 
     def emit_photons(self) -> None:
@@ -56,7 +63,15 @@ class LaserCircuit:
         Gets each emitter in this circuit's list of emitters to emit a photon.
         The photons emitted should be added to this circuit's photons list.
         '''
-        pass
+        i = 0
+        while i < len(self.get_emitters()):
+            new_photon = Photon(self.get_emitters()[i].get_x(), \
+                                   self.get_emitters()[i].get_y(), \
+                                   self.get_emitters()[i].get_frequency(), \
+                                   self.get_emitters()[i].get_direction() )
+            self.add_photon(new_photon)
+            self.board_displayer.add_photon_to_board(new_photon)
+            i += 1
 
 
     def is_finished(self) -> bool:
@@ -70,7 +85,12 @@ class LaserCircuit:
         -------
         True if the circuit has finished running or not, else False.
         '''
-        pass
+        i = 0
+        while i < len(self.get_photons()):
+            if not self.get_photons()[i].is_absorbed():
+                return False
+            i += 1
+        return True
 
 
     def print_emit_photons(self) -> None:
@@ -83,7 +103,27 @@ class LaserCircuit:
         
         You can assume the /home/output/ path exists.
         '''
-        pass
+        start = "0ns: Emitting photons."
+        print(start)
+
+        i = 0
+        print(f"len(self.get_emitters()): {len(self.get_emitters())}")
+        while i < len(self.get_emitters()):
+            if self.get_emitters()[i].get_direction() == "N":
+                full_direction = "North"
+            elif self.get_emitters()[i].get_direction() == "S":
+                full_direction = "South"
+            elif self.get_emitters()[i].get_direction() == "W":
+                full_direction = "West"
+            elif self.get_emitters()[i].get_direction() == "E":
+                full_direction = "East"
+            output = f"{self.get_emitters()[i].get_symbol()}: {self.get_emitters()[i].get_frequency()}THz, {full_direction}"
+            print(output)
+            # with open("/home/output/emit_photons.out", "a") as file:
+            with open("./emit_photons_out", "a") as file:
+                file.write(output)
+                file.close()
+            i += 1
 
 
     def print_activation_times(self) -> None:
@@ -98,7 +138,17 @@ class LaserCircuit:
 
         You can assume the /home/output/ path exists.
         '''
-        pass
+        self.receivers.sort(key=lambda Receiver: Receiver.activation_time)
+
+        i = 0
+        while i < len(self.get_receivers()):
+            output = f"R{self.get_receivers()[i].get_symbol()}: {self.get_receivers()[i].get_activation_time()}ns"
+            print(output)
+            # with open("/home/output/activation_times.out", "a") as file:
+            with open("./activation_times", "a") as file:
+                file.write(output)
+                file.close()
+            i += 1
 
 
     def print_total_energy(self) -> None:
@@ -113,12 +163,21 @@ class LaserCircuit:
 
         You can assume the /home/output/ path exists.
         '''
-        pass
+        #sorter
+        i = 0
+        while i < len(self.get_receivers()):
+            output = f"R{self.get_receivers()[i].get_symbol()}: {self.get_receivers()[i].get_total_energy()}eV ({self.get_receivers()[i].photons_absorbed})"
+            print(output)
+            # with open("/home/output/total_energy.out", "a") as file:
+            with open("./total_energy_out", "a") as file:
+                file.write(output)
+                file.close()
+            i += 1
 
     
     def print_board(self) -> None:
         '''Calls the print_board method in board_displayer.'''
-        pass
+        self.board_displayer.print_board()
 
 
     def get_collided_emitter(self, entity: Emitter | Receiver | Photon | Mirror) -> Emitter | None:
@@ -139,8 +198,13 @@ class LaserCircuit:
         -------
         An emitter if it has the same position as entity, else None.
         '''
-        #remove the line below once you start implementing this function
-        raise NotImplementedError
+        i = 0
+        while i < len(self.emitters):
+            if self.emitters[i].get_x() == entity.get_x() and \
+                self.emitters[i].get_y() == entity.get_y():
+                return self.emitters[i]
+            i += 1
+        return None
 
 
     def get_collided_receiver(self, entity: Emitter | Receiver | Photon | Mirror) -> Receiver | None:
@@ -161,8 +225,13 @@ class LaserCircuit:
         -------
         A receiver if it has the same position as entity, else None.
         '''
-        #remove the line below once you start implementing this function
-        raise NotImplementedError
+        i = 0
+        while i < len(self.receivers):
+            if self.receivers[i].get_x() == entity.get_x() and \
+                self.receivers[i].get_y() == entity.get_y():
+                return self.receivers[i]
+            i += 1
+        return None
 
 
     def get_collided_mirror(self, entity: Emitter | Receiver | Photon | Mirror) -> Mirror | None:
@@ -184,8 +253,13 @@ class LaserCircuit:
         -------
         A mirror if it has the same position as entity, else None.
         '''
-        #remove the line below once you start implementing this function
-        raise NotImplementedError
+        i = 0
+        while i < len(self.mirrors):
+            if self.mirrors[i].get_x() == entity.get_x() and \
+                self.mirrors[i].get_y() == entity.get_y():
+                return self.mirrors[i]
+            i += 1
+        return None
 
 
     def get_collided_component(self, photon: Photon) -> Emitter | Receiver | Mirror | None:
@@ -209,7 +283,16 @@ class LaserCircuit:
         ----
         Use the three collision methods above to handle this.
         '''
-        pass
+        if self.get_collided_emitter(photon):
+            return self.get_collided_emitter(photon)
+
+        if self.get_collided_receiver(photon):
+            return self.get_collided_receiver(photon)
+        
+        if self.get_collided_mirror(photon):
+            return self.get_collided_mirror(photon)
+
+        return None
 
 
     def tick(self) -> None:
@@ -223,7 +306,25 @@ class LaserCircuit:
         and checking if it collided with a component (and handling it if did
         occur). At the end, we then increment clock.
         '''
-        pass
+        
+        if self.is_finished():
+            return None
+        self.clock += 1
+        i = 0
+        while i < len(self.get_photons()):
+            if not self.get_photons()[i].is_absorbed():
+                self.get_photons()[i].move(self.get_width(), self.get_height())
+                print(f"self.get_photons()[i]:{self.get_photons()[i]} {self.get_photons()[i].get_x()} {self.get_photons()[i].get_y()} ")
+                self.board_displayer.add_photon_to_board(self.get_photons()[i])
+                #if collided
+                collided_component = self.get_collided_component(self.get_photons()[i])
+                print(f"collided_component{collided_component}")
+                if collided_component:
+                    print(f"self.get_photons()[i].get_direction(){self.get_photons()[i].get_direction()}")
+                    self.get_photons()[i].interact_with_component(collided_component, self.clock)
+                    print(f"self.get_photons()[i].get_direction(){self.get_photons()[i].get_direction()}")
+            i += 1
+        # self.clock += 1
 
 
     def run_circuit(self) -> None:
@@ -234,7 +335,32 @@ class LaserCircuit:
         circuit is finished running. All output in regards of running the 
         circuit should be contained in this method.
         '''
-        pass
+        print("========================\n   RUNNING CIRCUIT...\n========================")
+        self.emit_photons()
+        self.print_emit_photons()
+        #不按照案例来，改成finish的时候break出来
+        # while self.is_finished() == False:
+        j = 0
+        while True:
+        # while j < 5:
+            self.tick()
+            if self.clock % 5 == 0 or self.is_finished():
+                #store the rec_activated
+                rec_activated = []
+                i = 0
+                while i < len(self.get_receivers()):
+                    if self.get_receivers()[i].is_activated():
+                        rec_activated.append(self.get_receivers()[i].get_symbol())
+                    i += 1
+                print(f"{self.clock}ns: {len(rec_activated)}/{len(self.get_receivers())} receiver(s) activated.")
+                self.print_board()
+                if self.is_finished():
+                    break
+            # j += 1
+        self.print_activation_times()
+        self.print_total_energy()
+        print("========================\n   RUNNING FINISHED!\n========================")
+
 
     
     def add_emitter(self, emitter: Emitter) -> bool:
@@ -275,12 +401,42 @@ class LaserCircuit:
         You will need to find your own way to check for symbol collisions
         with other emitters.
         '''
-        pass         
+        if type(emitter) != Emitter:
+            return False
+        else:
+            # print(emitter)
+            # print(emitter.get_x())
+            # print(type(emitter.get_x()))
+            # print(self.width)
+            if emitter.get_x() > self.width - 1  or emitter.get_y() > self.height - 1:
+                raise ValueError(f"Error: position ({emitter.get_x()}, {emitter.get_y()}) is out-of-bounds of {self.width}x{self.height} circuit board.")
+                return False
+            if self.get_collided_emitter(emitter):
+                raise ValueError(f"Error: position ({emitter.get_x()}, {emitter.get_y()}) is already taken by emitter '{self.get_collided_emitter(emitter).get_symbol()}'.")
+                return False
+
+            i = 0
+            while i < len(self.emitters):
+                # if emitter.get_x() == self.emitters[i].get_x() and emitter.get_y() == self.emitters[i].get_y():
+                #     raise ValueError(f"Error: position ({emitter.get_x()}, {emitter.get_y()}) is already taken by emitter '{LaserCircuit.get_collided_emitter(self.emitters[i]).get_symbol()}'.")
+                #     return False
+                if emitter.get_symbol() == self.emitters[i].get_symbol():
+                    raise ValueError(f"Error: symbol '{emitter.get_symbol()}' is already taken.")
+                    return False
+                i += 1
+            ##all the check passed
+            self.emitters.append(emitter)
+            # print(emitter)
+            self.emitters.sort(key=lambda Emitter: Emitter.symbol)
+            # people.sort(key=lambda person: person.age)
+            # print(emitter)
+            self.board_displayer.add_component_to_board(emitter)
+            return True
 
     
     def get_emitters(self) -> list[Emitter]:
         '''Returns emitters.'''
-        pass
+        return self.emitters
 
     
     def add_receiver(self, receiver: Receiver) -> bool:
@@ -322,12 +478,48 @@ class LaserCircuit:
         You will need to find your own way to check for symbol collisions
         with other receivers.
         '''
-        pass
+        if type(receiver) != Receiver:
+            return False
+        else:
+            if receiver.get_x() > self.width - 1 or receiver.get_y() > self.height - 1:
+                raise ValueError(f"Error: position ({receiver.get_x()}, {receiver.get_y()}) is out-of-bounds of {self.width}x{self.height} circuit board.")
+                return False
+            
+            if self.get_collided_emitter(receiver):
+                raise ValueError(f"Error: position ({receiver.get_x()}, {receiver.get_y()}) is already taken by emitter '{self.get_collided_emitter(receiver).get_symbol()}'.")
+                return False
+            if self.get_collided_receiver(receiver):
+                raise ValueError(f"Error: position ({receiver.get_x()}, {receiver.get_y()}) is already taken by receiver '{self.get_collided_receiver(receiver).get_symbol()}'.")
+                return False
+            # j = 0
+            # while j < len(self.emitters):
+            #     if receiver.get_x() == self.emitters[j].get_x() and receiver.get_y() == self.emitters[j].get_y():
+            #         raise ValueError(f"Error: position ({receiver.get_x()}, {receiver.get_y()}) is already taken by emitter '{LaserCircuit.get_collided_emitter(self.emitters[j]).get_symbol()}'.")
+            #         return False
+            #     j += 1
+            
+            i = 0
+            while i < len(self.receivers):
+
+                if receiver.get_x() == self.receivers[i].get_x() and receiver.get_y() == self.receivers[i].get_y():
+                    raise ValueError(f"Error: position ({receiver.get_x()}, {receiver.get_y()}) is already taken by receiver '{LaserCircuit.get_collided_receiver(self.receivers[i]).get_symbol()}'.")
+                    return False
+                if receiver.get_symbol() == self.receivers[i].get_symbol():
+                    raise ValueError(f"Error: symbol '{receiver.get_symbol()}' is already taken.")
+                    return False
+                i += 1
+            ##all the check passed
+            self.receivers.append(receiver)
+            self.receivers.sort(key=lambda Receiver: Receiver.symbol)
+            # self.receivers.sort()
+            receiver.symbol = receiver.symbol[1:]
+            self.board_displayer.add_component_to_board(receiver)
+            return True
 
 
     def get_receivers(self) -> list[Receiver]:
         '''Returns receivers.'''
-        pass
+        return self.receivers
 
 
     def add_photon(self, photon: Photon) -> bool:
@@ -345,13 +537,17 @@ class LaserCircuit:
         -------
         Returns True if the photon is added in, else False.
         '''
-        pass
+        if type(photon) == Photon:
+            self.photons.append(photon)
+            return True
+        else:
+            return False
 
 
     def get_photons(self) -> list[Photon]:
         # only requires implementation once you reach RUN-MY-CIRCUIT
         '''Returns photons.'''
-        pass
+        return self.photons
 
 
     def add_mirror(self, mirror: Mirror) -> bool:
@@ -382,20 +578,41 @@ class LaserCircuit:
         stating the cause of the error and returns False, skipping any
         remaining checks.
         '''
-        pass
+        if type(mirror) != Mirror:
+            return False
+        else:
+            if mirror.get_x() > self.width - 1 or mirror.get_y() > self.height - 1:
+                raise ValueError(f"Error: position ({mirror.get_x()}, {mirror.get_y()}) is out-of-bounds of {self.width}x{self.height} circuit board.")
+                return False
+
+            if self.get_collided_emitter(mirror):
+                raise ValueError(f"Error: position ({mirror.get_x()}, {mirror.get_y()}) is already taken by emitter '{self.get_collided_emitter(mirror).get_symbol()}'.")
+                return False
+            if self.get_collided_receiver(mirror):
+                raise ValueError(f"Error: position ({mirror.get_x()}, {mirror.get_y()}) is already taken by receiver '{self.get_collided_receiver(mirror).get_symbol()}'.")
+                return False
+            if self.get_collided_mirror(mirror):
+                raise ValueError(f"Error: position ({mirror.get_x()}, {mirror.get_y()}) is already taken by mirror '{self.get_collided_mirror(mirror).get_symbol()}'.")
+                return False
+            ##all the check passed
+            self.mirrors.append(mirror)
+            self.mirrors.sort(key=lambda Mirror: Mirror.symbol)
+            # self.receivers.sort()
+            self.board_displayer.add_component_to_board(mirror)
+            return True
 
 
     def get_mirrors(self) -> list[Mirror]:
         # only requires implementation once you reach ADD-MY-MIRRORS
         '''Returns mirrors.'''
-        pass
+        return self.mirrors
 
     
     def get_width(self) -> int:
         '''Returns width.'''
-        pass
+        return self.width
 
 
     def get_height(self) -> int:
         '''Returns height.'''
-        rpass
+        return self.height

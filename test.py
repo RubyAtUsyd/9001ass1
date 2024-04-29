@@ -2,9 +2,9 @@ from laser_circuit import LaserCircuit
 from emitter import Emitter
 
 '''
-Name:   Xxx Yyy
-SID:    XXXXXXXXX
-Unikey: xxxxXXXX
+Name:   Ruby Liang
+SID:    540180464
+Unikey: blia0673
 
 This test program checks if the RGB features are implemented correctly. 
 

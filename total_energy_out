@@ -1,1 +1,7 @@
-4: 0eV (0)R4: 0eV (0)R4: 0eV (0)R4: 0eV (0)R4: 0eV (0)R4: 0eV (0)R4: 0eV (0)R4: 0.41eV (1)
+            k = 0
+            while k < len(self.mirrors):
+
+                if emitter.get_x() == self.mirrors[k].get_x() and emitter.get_y() == self.mirrors[k].get_y():
+                    raise ValueError(f"Error: position ({emitter.get_x()}, {emitter.get_y()}) is already taken by receiver '{LaserCircuit.get_collided_receiver(self.receivers[k]).get_symbol()}'.")
+                    return False
+                k += 1R3: 0eV (0)R1: 0eV (0)R0: 0eV (0)R0: 0.41eV (1)R1: 0eV (0)R1: 0.41eV (1)R1: 0.41eV (1)R1: 0eV (0)R1: 0.41eV (1)R1: 0eV (0)R1: 0eV (0)

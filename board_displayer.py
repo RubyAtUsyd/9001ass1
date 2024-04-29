@@ -4,9 +4,9 @@ from photon import Photon
 from mirror import Mirror
 
 '''
-Name:   Xxx Yyy
-SID:    XXXXXXXXX
-Unikey: xxxxXXXX
+Name:   Ruby Liang
+SID:    540180464
+Unikey: blia0673
 
 BoardDisplayer - A helper class used to display the circuit board.
 Each time a component is added to the circuit, this board is updated to 
@@ -38,7 +38,9 @@ class BoardDisplayer:
         width  - the width to set this board to
         height - the height to set this board to
         '''
-        pass
+        self.width = width
+        self.height = height
+        self.board = self.create_board()
 
 
     def create_board(self) -> list[list[str]]:
@@ -64,7 +66,17 @@ class BoardDisplayer:
         The board above has 3 rows (height), with each row having 8 columns (width).
         Each cell is initialised as a space, which represents an empty cell.
         '''
-        pass
+        i = 0
+        board = []
+        while i < self.height:
+            row = []
+            j = 0
+            while j < self.width:
+                row.append(' ')
+                j += 1
+            board.append(row)
+            i += 1#行列搞反了
+        return board
 
    
     def add_component_to_board(self, component: Emitter | Receiver | Mirror) -> None:
@@ -98,7 +110,9 @@ class BoardDisplayer:
          [' ', ' ', ' ']
         ]      
         '''
-        pass
+        # def add_component_to_board(self, component: Emitter | Receiver ) -> None:
+        self.board[component.get_y()][component.get_x()] = component.get_symbol()
+
 
 
     def add_photon_to_board(self, photon: Photon) -> None:
@@ -112,7 +126,8 @@ class BoardDisplayer:
         ----------
         photon: the photon to add its symbol on the board
         '''
-        pass
+        if self.board[photon.get_y()][photon.get_x()] == " ":
+            self.board[photon.get_y()][photon.get_x()] = "."
 
 
     def print_board(self) -> None:
@@ -164,4 +179,15 @@ class BoardDisplayer:
         |B......1|
         +--------+
         '''
-        pass
+        boundary = "+" + self.width * "-" +"+"
+        print(boundary)
+        i = 0
+        while i < self.height:
+            j = 0
+            print("|", end="")
+            while j < self.width:
+                print(f"{self.board[i][j]}", end="")
+                j += 1
+            i += 1
+            print("|")
+        print(boundary)

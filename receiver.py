@@ -1,9 +1,9 @@
 from photon import Photon
 
 '''
-Name:   Xxx Yyy
-SID:    XXXXXXXXX
-Unikey: xxxxXXXX
+Name:   Ruby Liang
+SID:    540180464
+Unikey: blia0673
 
 Receiver - A photodetector which absorbs photons and stores its energy. 
 When a photon reaches a receiver, the receiver will absorb the photon and
@@ -41,7 +41,14 @@ class Receiver:
         x      - the x position to set this receiver to
         y      - the y position to set this receiver to       
         '''
-        pass
+        self.symbol = symbol
+        self.x = x
+        self.y = y
+        self.component_type = "receiver"
+        self.total_energy = 0
+        self.photons_absorbed = 0
+        self.activated = False
+        self.activation_time = 0
 
 
     def convert_frequency_to_energy(frequency: int) -> float:
@@ -65,7 +72,7 @@ class Receiver:
         # calculate the joules then convert to electronvolts
         joules = PLANCKS_CONSTANT * frequency * THZ_TO_HZ
         electronvolts = joules / JOULES_TO_EV
-        return electronvolts
+        return round(electronvolts, 2)
 
 
     def absorb_photon(self, photon: Photon, timestamp: int) -> None:
@@ -87,30 +94,42 @@ class Receiver:
         timestamp - the time in nanoseconds when the photon collided with this
                     receiver
         '''
-        pass
+        print(photon.get_frequency())
+
+        # photon_energy =  self.convert_frequency_to_energy(photon.get_frequency())
+        photon_energy =  Receiver.convert_frequency_to_energy(photon.get_frequency())
+        # photon_energy =  self.convert_frequency_to_energy(100)
+        self.total_energy += photon_energy
+        photon.got_absorbed()
+        self.photons_absorbed += 1
+        if self.photons_absorbed == 1:
+            self.activated = True
+            self.activation_time = timestamp
 
 
     def is_activated(self) -> bool:
         # only requires implementation once you reach RUN-MY-CIRCUIT
         '''Returns whether or not this receiver is activated. '''
-        pass
+        if self.activated:
+            return True
+        else: 
+            return False
 
     
     def get_total_energy(self) -> float:
         # only requires implementation once you reach RUN-MY-CIRCUIT
         '''Returns total_energy.'''
-        pass
+        return self.total_energy
 
 
     def get_activation_time(self) -> int:
         # only requires implementation once you reach RUN-MY-CIRCUIT
         '''Returns activation_time.'''
-        pass
-
+        return self.activation_time
 
     def get_component_type(self) -> str:
         '''Returns component type.'''
-        pass
+        return self.component_type
 
 
     def get_symbol(self) -> str:
@@ -122,17 +141,17 @@ class Receiver:
         >>> self.get_symbol()
         '0'
         '''
-        pass
+        return self.symbol
 
 
     def get_x(self) -> int:
         '''Returns x.'''
-        pass
+        return self.x
 
 
     def get_y(self) -> int:
         '''Returns y.'''
-        pass
+        return self.y
 
     
     def __str__(self) -> str:
@@ -154,4 +173,5 @@ class Receiver:
         >>> print(self)
         R0: 0.54eV (2)
         '''
-        pass   
+        format_str = f"{self.get_symbol()}: {self.get_total_energy()}eV ({self.photons_absorbed}) {self.get_total_energy()}"
+        return format_str

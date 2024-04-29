@@ -1,7 +1,7 @@
 '''
-Name:   Xxx Yyy
-SID:    XXXXXXXXX
-Unikey: xxxxXXXX
+Name:   Ruby Liang
+SID:    540180464
+Unikey: blia0673
 
 Photon - A particle of light that are emitted by emitters and travels along the
 circuit board. Photons have a frequency (THz) and direction. They can interact 
@@ -43,7 +43,13 @@ class Photon:
         frequency - the frequency to set this photon to
         direction - the direction to set this photon to
         '''
-        pass
+        self.symbol = '.'
+        self.x = x
+        self.y = y
+        # self.component_type = "emitter"
+        self.frequency = frequency
+        self.direction = direction
+        self.absorbed = False
 
 
     def move(self, board_width: int, board_height: int) -> None:
@@ -60,11 +66,40 @@ class Photon:
         ----------
         board_width  - width of circuit board 
         board_height - height of circuit board
+        
+        ------>board_width
+        |
+        |
+        |
+        v
+        board_width
         '''
-        pass
+        print(f"{self.get_x()}, {self.get_y()}request move {self.get_direction()}")
+        if not self.is_absorbed():
+            if self.get_direction() == 'N':
+                if self.y > 0:
+                    self.y -= 1
+                else:
+                    self.got_absorbed()
+            elif self.get_direction() == 'E':
+                if self.x < board_width - 1:    
+                    self.x += 1
+                else:
+                    self.got_absorbed()
+            elif self.get_direction() == 'S':
+                if self.y < board_height - 1:
+                    self.y += 1
+                else:
+                    self.got_absorbed()
+            elif self.get_direction() == 'W':
+                if self.x > 0:
+                    self.x -= 1
+                else:
+                    self.got_absorbed()
+            print(f"{self.get_x()}, {self.get_y()}request move {self.get_direction()} successfull")
 
-
-    def interact_with_component(self, component: object, timestamp: int) -> None:
+    # def interact_with_component(self, component: Emitter | Receiver | Mirror, timestamp: int) -> None:
+    def interact_with_component(self, component: object , timestamp: int) -> None:
         # only requires implementation once you reach RUN-MY-CIRCUIT
         # will require extensions in ADD-MY-MIRRORS
         '''
@@ -94,19 +129,28 @@ class Photon:
         >>> component.get_component_type()
         'emitter'
         '''
-        pass
+        if self.is_absorbed():
+            return None
+        if component.get_component_type() == "emitter":
+            return None
+        elif component.get_component_type() == "receiver":
+            # self.got_absorbed()
+            component.absorb_photon(self, timestamp)
+        elif component.get_component_type() == "mirror":
+            component.reflect_photon(self)
 
+            
 
     def got_absorbed(self) -> None:
         # only requires implementation once you reach RUN-MY-CIRCUIT
         '''Updates the absorbed attribute to represent an absorption.'''
-        pass
+        self.absorbed = True
 
 
     def is_absorbed(self) -> bool:
         # only requires implementation once you reach RUN-MY-CIRCUIT
         '''Returns absorbed.'''
-        pass
+        return self.absorbed
 
 
     def set_direction(self, direction: str) -> None:
@@ -119,34 +163,34 @@ class Photon:
         ----------
         direction - the new direction to set for this photon
         '''
-        pass
-
+        if  (direction == 'N' or direction == 'E' or direction == 'S' or direction == 'W'):
+            self.direction = direction
 
     def get_direction(self) -> str:
         # only requires implementation once you reach RUN-MY-CIRCUIT
         '''Returns direction.'''
-        pass
+        return self.direction
 
         
     def get_frequency(self) -> int:
         # only requires implementation once you reach RUN-MY-CIRCUIT
         '''Returns frequency.'''
-        pass
+        return self.frequency
 
 
     def get_symbol(self) -> str:
         # only requires implementation once you reach RUN-MY-CIRCUIT
         '''Returns symbol.'''
-        pass
+        return self.symbol
 
     
     def get_x(self) -> int:
         # only requires implementation once you reach RUN-MY-CIRCUIT
         '''Returns x.'''
-        pass
+        return self.x
 
 
     def get_y(self) -> int:
         # only requires implementation once you reach RUN-MY-CIRCUIT
         '''Returns y.'''
-        pass
+        return self.y 
